@@ -1,36 +1,18 @@
-import express from 'express'
-import path from 'path'
-import favicon from 'serve-favicon'
-import dotenv from 'dotenv'
+import express from 'express';
+import cors from 'cors';
+import './dotenv.js';
+import optionsRouter from './routes/options.js';
+import jerseysRouter from './routes/jerseys.js';
 
-// import the router from your routes file
+const app = express();
+const PORT = process.env.PORT || 3001;
 
+app.use(cors());
+app.use(express.json());
 
-dotenv.config()
-
-const PORT = process.env.PORT || 3000
-
-const app = express()
-
-app.use(express.json())
-
-if (process.env.NODE_ENV === 'development') {
-    app.use(favicon(path.resolve('../', 'client', 'public', 'lightning.png')))
-}
-else if (process.env.NODE_ENV === 'production') {
-    app.use(favicon(path.resolve('public', 'lightning.png')))
-    app.use(express.static('public'))
-}
-
-// specify the api path for the server to use
-
-
-if (process.env.NODE_ENV === 'production') {
-    app.get('/*', (_, res) =>
-        res.sendFile(path.resolve('public', 'index.html'))
-    )
-}
+app.use('/options', optionsRouter);
+app.use('/jerseys', jerseysRouter);
 
 app.listen(PORT, () => {
-    console.log(`server listening on http://localhost:${PORT}`)
-})
+  console.log(`Server running on port ${PORT}`);
+});
