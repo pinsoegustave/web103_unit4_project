@@ -1,25 +1,19 @@
-import React from "react";
+import { useState, useMemo } from 'react';
 
-export default function JerseyBuilder({
-  leftLogos,
-  rightLogos,
-  jerseyColors,
-  createJersey,
-}) {
-  const [backName, setBackName] = useState("");
-  const [leftLogoId, setLeftLogoId] = useState("");
-  const [rightLogoId, setRightLogoId] = useState("");
-  const [jerseyColorId, setJerseyColorId] = useState(jerseyColors[0]?.id || "");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+const BASE_PRICE = 50;
+const PRICE_PER_CHARACTER = 0.5;
 
-  const selectedLeftLogo = leftLogos.find((l) => l.id === Number(leftLogoId));
-  const selectedRightLogo = rightLogos.find(
-    (l) => l.id === Number(rightLogoId),
-  );
-  const selectedColor = jerseyColors.find(
-    (c) => c.id === Number(jerseyColorId),
-  );
+function JerseyBuilder({ leftLogos, rightLogos, jerseyColors, createJersey }) {
+  const [backName, setBackName] = useState('');
+  const [leftLogoId, setLeftLogoId] = useState('');
+  const [rightLogoId, setRightLogoId] = useState('');
+  const [jerseyColorId, setJerseyColorId] = useState(jerseyColors[0]?.id || '');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const selectedLeftLogo = leftLogos.find(l => l.id === Number(leftLogoId));
+  const selectedRightLogo = rightLogos.find(l => l.id === Number(rightLogoId));
+  const selectedColor = jerseyColors.find(c => c.id === Number(jerseyColorId));
 
   const totalPrice = useMemo(() => {
     let price = BASE_PRICE;
@@ -32,31 +26,29 @@ export default function JerseyBuilder({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
 
     try {
       await createJersey({
         back_name: backName,
         left_logo_id: leftLogoId || null,
         right_logo_id: rightLogoId || null,
-        jersey_color_id: jerseyColorId || null,
+        jersey_color_id: jerseyColorId || null
       });
-      setSuccess("Jersey created!");
-      setBackName("");
-      setLeftLogoId("");
-      setRightLogoId("");
+      setSuccess('Added to favorites.');
+      setBackName('');
+      setLeftLogoId('');
+      setRightLogoId('');
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <div className="jersey-builder">
-      <div
-        className="jersey-preview"
-        style={{ backgroundColor: selectedColor?.hex_color || '#cccccc' }}
-      >
+    <div className="builder-card">
+      <div className="jersey-preview" style={{ backgroundColor: selectedColor?.hex_color || '#cccccc' }}>
+        <div className="jersey-collar" />
         {selectedLeftLogo && (
           <img src={selectedLeftLogo.image_url} alt={selectedLeftLogo.name} className="logo left-chest" />
         )}
@@ -68,7 +60,7 @@ export default function JerseyBuilder({
 
       <form onSubmit={handleSubmit} className="jersey-form">
         <label>
-          Back Name
+          Back name
           <input
             type="text"
             value={backName}
@@ -79,7 +71,24 @@ export default function JerseyBuilder({
         </label>
 
         <label>
-          Left Chest Logo
+          Jersey color
+          <div className="swatch-row">
+            {jerseyColors.map(color => (
+              <button
+                type="button"
+                key={color.id}
+                className={`swatch ${Number(jerseyColorId) === color.id ? 'swatch-active' : ''}`}
+                style={{ backgroundColor: color.hex_color }}
+                onClick={() => setJerseyColorId(color.id)}
+                aria-label={color.name}
+                title={`${color.name}${Number(color.price_modifier) > 0 ? ` (+$${color.price_modifier})` : ''}`}
+              />
+            ))}
+          </div>
+        </label>
+
+        <label>
+          Left chest logo
           <select value={leftLogoId} onChange={(e) => setLeftLogoId(e.target.value)}>
             <option value="">None</option>
             {leftLogos.map(logo => (
@@ -91,7 +100,7 @@ export default function JerseyBuilder({
         </label>
 
         <label>
-          Right Chest Logo
+          Right chest logo
           <select value={rightLogoId} onChange={(e) => setRightLogoId(e.target.value)}>
             <option value="">None</option>
             {rightLogos.map(logo => (
@@ -102,24 +111,18 @@ export default function JerseyBuilder({
           </select>
         </label>
 
-        <label>
-          Jersey Color
-          <select value={jerseyColorId} onChange={(e) => setJerseyColorId(e.target.value)}>
-            {jerseyColors.map(color => (
-              <option key={color.id} value={color.id}>
-                {color.name} (+${Number(color.price_modifier).toFixed(2)})
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <p className="total-price">Total: ${totalPrice}</p>
+        <div className="price-row">
+          <span>Total</span>
+          <span className="price-value">${totalPrice}</span>
+        </div>
 
         {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
 
-        <button type="submit">Add to Cart</button>
+        <button type="submit" className="btn-primary">★ Add to Favorites</button>
       </form>
     </div>
   );
 }
+
+export default JerseyBuilder;

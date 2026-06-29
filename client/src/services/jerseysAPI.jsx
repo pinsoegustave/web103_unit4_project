@@ -36,7 +36,7 @@ function JerseysAPI() {
       body: JSON.stringify(jerseyData)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to create jersey');
+    if (!res.ok) console.log('Failed to create jersey');
     await fetchJerseys();
     return data;
   };
@@ -48,7 +48,7 @@ function JerseysAPI() {
       body: JSON.stringify(jerseyData)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to update jersey');
+    if (!res.ok) console.log('Failed to create jersey');
     await fetchJerseys();
     return data;
   };

@@ -1,68 +1,359 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-#root {
-    --font-family: Rubik, Verdana, sans-serif;
-    --primary: rgb(115, 2, 12);
-    --primary-hover: black;
-    --color: white;
-    --h1-color: var(--color);
-    --h2-color: var(--color);
-    --h3-color: var(--color);
-    --card-background-color: rgba(0, 0, 0, 0.8);
-    --card-sectionning-background-color: rgba(0, 0, 0, 0.8);
-    --form-element-active-border-color: var(--color);
-    --form-element-placeholder-color: gray;
+:root {
+  --ink: #11151c;
+  --panel: #1b212c;
+  --panel-light: #232b38;
+  --chalk: #f3f1ea;
+  --chalk-dim: #aab2c0;
+  --gold: #e3a93f;
+  --gold-dim: #c89236;
+  --danger: #c8553d;
+  --border: #2c3543;
 }
 
-#root h1 {
-    font-size: 3rem;
-    margin-bottom: 0px;
+* {
+  box-sizing: border-box;
 }
 
-#root h2 {
-    margin-bottom: 0px;
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--chalk);
+  font-family: 'Work Sans', sans-serif;
 }
 
-#root h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0px;
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
 }
 
-#root p {
-    margin-bottom: 10px;
+/* ---------- Hero ---------- */
+.hero {
+  text-align: center;
+  padding: 4rem 1rem 3rem;
 }
 
-#root [role=button], #root button, #root input[type=submit] {
-    font-family: var(--font-family);
-    font-weight: 500;
-    text-transform: uppercase;
-    border: 2px solid transparent;
-    margin: 10px;
-    width: max-content;
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 0.75rem;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
 }
 
-#root [role=button]:hover, #root button:hover, #root input[type=submit]:hover {
-    border: 2px solid var(--color);
+.hero-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(2.5rem, 7vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: 1px;
+  margin: 0 0 1rem;
 }
 
-#root main {
-    display: flex;
-    overflow-x: hidden;
-    overflow-y: hidden;
+.hero-subtitle {
+  color: var(--chalk-dim);
+  font-size: 1.05rem;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
-#root article {
-    text-align: left;
-    margin-bottom: 5px;
+.section-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase;
 }
 
-#root article header {
-    border-bottom: 0px;
-    margin-bottom: 10px;
+.loading-state {
+  text-align: center;
+  padding: 4rem;
+  color: var(--chalk-dim);
 }
 
-#root article footer {
-    border-top: 0px;
-    margin-top: 0px;
-    display: flex;
+/* ---------- Builder Card ---------- */
+.builder-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.builder-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 700px;
+}
+
+/* ---------- Jersey shape (shared by preview + thumbs) ---------- */
+.jersey-preview {
+  position: relative;
+  width: 220px;
+  height: 280px;
+  border-radius: 10px 10px 36px 36px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.jersey-collar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 20px;
+  background: var(--panel);
+  border-radius: 0 0 50% 50%;
+}
+
+.logo {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  top: 36px;
+}
+
+.logo.left-chest {
+  left: 22px;
+}
+
+.logo.right-chest {
+  right: 22px;
+}
+
+.back-name-preview {
+  position: absolute;
+  bottom: 70px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  padding: 0 10px;
+  word-break: break-word;
+}
+
+.back-name-preview.small {
+  bottom: 30px;
+  font-size: 0.8rem;
+}
+
+/* ---------- Form ---------- */
+.jersey-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 260px;
+}
+
+.jersey-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--chalk-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  gap: 0.4rem;
+}
+
+.jersey-form input,
+.jersey-form select {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-light);
+  color: var(--chalk);
+  font-size: 0.95rem;
+  font-family: 'Work Sans', sans-serif;
+}
+
+.swatch-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  padding: 0;
+}
+
+.swatch-active {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--gold);
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Space Mono', monospace;
+  border-top: 1px dashed var(--border);
+  padding-top: 0.8rem;
+}
+
+.price-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.error {
+  color: var(--danger);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.success {
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: var(--gold-dim);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--chalk-dim);
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  border-color: var(--chalk-dim);
+  color: var(--chalk);
+}
+
+.btn-danger {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--danger);
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: var(--chalk);
+}
+
+.btn-small {
+  font-size: 0.8rem;
+}
+
+/* ---------- Favorites grid ---------- */
+.favorites-section {
+  margin-top: 2rem;
+}
+
+.empty-state {
+  color: var(--chalk-dim);
+  text-align: center;
+  padding: 2rem;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.favorite-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.favorite-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+.favorite-thumb {
+  position: relative;
+  width: 100%;
+  height: 170px;
+  border-radius: 8px 8px 28px 28px;
+  flex-shrink: 0;
+}
+
+.favorite-info h3 {
+  margin: 0 0 0.2rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 1.05rem;
+}
+
+.favorite-meta {
+  color: var(--chalk-dim);
+  font-size: 0.8rem;
+  margin: 0 0 0.5rem;
+}
+
+.favorite-price {
+  font-family: 'Space Mono', monospace;
+  color: var(--gold);
+  font-weight: 700;
+  margin: 0 0 0.7rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.edit-form input,
+.edit-form select {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-light);
+  color: var(--chalk);
 }

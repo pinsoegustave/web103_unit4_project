@@ -1,32 +1,25 @@
-import React from "react";
+import { useState } from 'react';
 
-export default function JerseyList({
-  jerseys,
-  leftLogos,
-  rightLogos,
-  jerseyColors,
-  updateJersey,
-  deleteJersey,
-}) {
+function JerseyList({ jerseys, leftLogos, rightLogos, jerseyColors, updateJersey, deleteJersey }) {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const startEdit = (jersey) => {
     setEditingId(jersey.id);
     setEditForm({
       back_name: jersey.back_name,
-      left_logo_id: jersey.left_logo_id || "",
-      right_logo_id: jersey.right_logo_id || "",
-      jersey_color_id: jersey.jersey_color_id || "",
+      left_logo_id: jersey.left_logo_id || '',
+      right_logo_id: jersey.right_logo_id || '',
+      jersey_color_id: jersey.jersey_color_id || ''
     });
-    setError("");
+    setError('');
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditForm({});
-    setError("");
+    setError('');
   };
 
   const saveEdit = async (id) => {
@@ -35,7 +28,7 @@ export default function JerseyList({
         ...editForm,
         left_logo_id: editForm.left_logo_id || null,
         right_logo_id: editForm.right_logo_id || null,
-        jersey_color_id: editForm.jersey_color_id || null,
+        jersey_color_id: editForm.jersey_color_id || null
       });
       setEditingId(null);
     } catch (err) {
@@ -43,15 +36,16 @@ export default function JerseyList({
     }
   };
 
-  return (
-  <div className="jersey-list">
-      <h2>Your Jerseys</h2>
-      {jerseys.length === 0 && <p>No jerseys created yet.</p>}
+  if (jerseys.length === 0) {
+    return <p className="empty-state">No favorites yet — build a kit above to save your first one.</p>;
+  }
 
+  return (
+    <div className="favorites-grid">
       {jerseys.map(jersey => (
-        <div key={jersey.id} className="jersey-card">
+        <div key={jersey.id} className="favorite-card">
           {editingId === jersey.id ? (
-            <>
+            <div className="edit-form">
               <input
                 type="text"
                 value={editForm.back_name}
@@ -62,7 +56,7 @@ export default function JerseyList({
                 value={editForm.left_logo_id}
                 onChange={(e) => setEditForm({ ...editForm, left_logo_id: e.target.value })}
               >
-                <option value="">None</option>
+                <option value="">No left logo</option>
                 {leftLogos.map(logo => (
                   <option key={logo.id} value={logo.id}>{logo.name}</option>
                 ))}
@@ -72,7 +66,7 @@ export default function JerseyList({
                 value={editForm.right_logo_id}
                 onChange={(e) => setEditForm({ ...editForm, right_logo_id: e.target.value })}
               >
-                <option value="">None</option>
+                <option value="">No right logo</option>
                 {rightLogos.map(logo => (
                   <option key={logo.id} value={logo.id}>{logo.name}</option>
                 ))}
@@ -89,22 +83,42 @@ export default function JerseyList({
 
               {error && <p className="error">{error}</p>}
 
-              <button onClick={() => saveEdit(jersey.id)}>Save</button>
-              <button onClick={cancelEdit}>Cancel</button>
-            </>
+              <div className="card-actions">
+                <button onClick={() => saveEdit(jersey.id)} className="btn-primary btn-small">Save</button>
+                <button onClick={cancelEdit} className="btn-ghost btn-small">Cancel</button>
+              </div>
+            </div>
           ) : (
             <>
-              <h3>{jersey.back_name}</h3>
-              <p>Left Logo: {jersey.left_logo_name || 'None'}</p>
-              <p>Right Logo: {jersey.right_logo_name || 'None'}</p>
-              <p>Color: {jersey.jersey_color_name}</p>
-              <p>Price: ${Number(jersey.total_price).toFixed(2)}</p>
-              <button onClick={() => startEdit(jersey)}>Edit</button>
-              <button onClick={() => deleteJersey(jersey.id)}>Delete</button>
+              <div
+                className="favorite-thumb"
+                style={{ backgroundColor: jersey.jersey_hex_color || '#cccccc' }}
+              >
+                <div className="jersey-collar" />
+                {jersey.left_logo_image && (
+                  <img src={jersey.left_logo_image} alt={jersey.left_logo_name} className="logo left-chest" />
+                )}
+                {jersey.right_logo_image && (
+                  <img src={jersey.right_logo_image} alt={jersey.right_logo_name} className="logo right-chest" />
+                )}
+                <div className="back-name-preview small">{jersey.back_name}</div>
+              </div>
+
+              <div className="favorite-info">
+                <h3>{jersey.back_name}</h3>
+                <p className="favorite-meta">{jersey.jersey_color_name}{jersey.left_logo_name ? ` · ${jersey.left_logo_name}` : ''}{jersey.right_logo_name ? ` · ${jersey.right_logo_name}` : ''}</p>
+                <p className="favorite-price">${Number(jersey.total_price).toFixed(2)}</p>
+                <div className="card-actions">
+                  <button onClick={() => startEdit(jersey)} className="btn-ghost btn-small">Edit</button>
+                  <button onClick={() => deleteJersey(jersey.id)} className="btn-danger btn-small">Remove</button>
+                </div>
+              </div>
             </>
           )}
         </div>
       ))}
     </div>
-    );
+  );
 }
+
+export default JerseyList;
